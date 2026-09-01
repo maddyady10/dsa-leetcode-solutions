@@ -1,0 +1,278 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+    width="1100"
+    height="500"
+    viewBox="0 0 1100 500">
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#161b22"/>
+    </linearGradient>
+
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#58a6ff"/>
+      <stop offset="100%" stop-color="#a371f7"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1100" height="500" rx="18" fill="url(#bg)"/>
+
+  <!-- Border -->
+  <rect x="1" y="1"
+        width="1098"
+        height="498"
+        rx="18"
+        fill="none"
+        stroke="#30363d"/>
+
+  <!-- Header -->
+  <text x="45" y="52"
+        font-family="Arial, sans-serif"
+        font-size="24"
+        font-weight="700"
+        fill="#f0f6fc">
+    DSA PRACTICE STATISTICS
+  </text>
+
+  <text x="45" y="78"
+        font-family="Arial, sans-serif"
+        font-size="13"
+        fill="#8b949e">
+    Data Structures &amp; Algorithms · Java · LeetCode
+  </text>
+
+  <rect x="45" y="92"
+        width="1010"
+        height="2"
+        fill="url(#accent)"/>
+
+  <!-- Main metrics -->
+
+  <text x="125" y="145"
+        text-anchor="middle"
+        font-family="Arial, sans-serif"
+        font-size="34"
+        font-weight="700"
+        fill="#f0f6fc">5</text>
+
+  <text x="125" y="170"
+        text-anchor="middle"
+        font-family="Arial, sans-serif"
+        font-size="12"
+        fill="#8b949e">TOTAL</text>
+
+
+  <text x="375" y="145"
+        text-anchor="middle"
+        font-family="Arial, sans-serif"
+        font-size="34"
+        font-weight="700"
+        fill="#3fb950">3</text>
+
+  <text x="375" y="170"
+        text-anchor="middle"
+        font-family="Arial, sans-serif"
+        font-size="12"
+        fill="#8b949e">EASY</text>
+
+
+  <text x="625" y="145"
+        text-anchor="middle"
+        font-family="Arial, sans-serif"
+        font-size="34"
+        font-weight="700"
+        fill="#d29922">2</text>
+
+  <text x="625" y="170"
+        text-anchor="middle"
+        font-family="Arial, sans-serif"
+        font-size="12"
+        fill="#8b949e">MEDIUM</text>
+
+
+  <text x="875" y="145"
+        text-anchor="middle"
+        font-family="Arial, sans-serif"
+        font-size="34"
+        font-weight="700"
+        fill="#f85149">0</text>
+
+  <text x="875" y="170"
+        text-anchor="middle"
+        font-family="Arial, sans-serif"
+        font-size="12"
+        fill="#8b949e">HARD</text>
+
+
+  <!-- Difficulty -->
+
+  <text x="45" y="215"
+        font-family="Arial, sans-serif"
+        font-size="14"
+        font-weight="700"
+        fill="#f0f6fc">
+    DIFFICULTY DISTRIBUTION
+  </text>
+
+  <text x="45" y="245"
+        font-family="Arial, sans-serif"
+        font-size="12"
+        fill="#8b949e">Easy</text>
+
+  <rect x="105" y="237" width="760" height="10"
+        rx="5" fill="#30363d"/>
+
+  <rect x="105" y="237"
+        width="456.0"
+        height="10"
+        rx="5"
+        fill="#3fb950"/>
+
+  <text x="890" y="246"
+        font-family="Arial, sans-serif"
+        font-size="12"
+        fill="#3fb950">60%</text>
+
+
+  <text x="45" y="280"
+        font-family="Arial, sans-serif"
+        font-size="12"
+        fill="#8b949e">Medium</text>
+
+  <rect x="105" y="272" width="760" height="10"
+        rx="5" fill="#30363d"/>
+
+  <rect x="105" y="272"
+        width="304.0"
+        height="10"
+        rx="5"
+        fill="#d29922"/>
+
+  <text x="890" y="281"
+        font-family="Arial, sans-serif"
+        font-size="12"
+        fill="#d29922">40%</text>
+
+
+  <text x="45" y="315"
+        font-family="Arial, sans-serif"
+        font-size="12"
+        fill="#8b949e">Hard</text>
+
+  <rect x="105" y="307" width="760" height="10"
+        rx="5" fill="#30363d"/>
+
+  <rect x="105" y="307"
+        width="0.0"
+        height="10"
+        rx="5"
+        fill="#f85149"/>
+
+  <text x="890" y="316"
+        font-family="Arial, sans-serif"
+        font-size="12"
+        fill="#f85149">0%</text>
+
+
+  <!-- Activity -->
+
+  <rect x="45" y="350"
+        width="1010"
+        height="105"
+        rx="12"
+        fill="#161b22"
+        stroke="#30363d"/>
+
+  <text x="70" y="380"
+        font-family="Arial, sans-serif"
+        font-size="13"
+        font-weight="700"
+        fill="#f0f6fc">
+    PRACTICE ACTIVITY
+  </text>
+
+
+  <text x="270" y="414"
+        text-anchor="middle"
+        font-family="Arial, sans-serif"
+        font-size="22"
+        font-weight="700"
+        fill="#58a6ff">
+    0
+  </text>
+
+  <text x="270" y="435"
+        text-anchor="middle"
+        font-family="Arial, sans-serif"
+        font-size="11"
+        fill="#8b949e">
+    CURRENT STREAK
+  </text>
+
+
+  <text x="500" y="414"
+        text-anchor="middle"
+        font-family="Arial, sans-serif"
+        font-size="22"
+        font-weight="700"
+        fill="#a371f7">
+    1
+  </text>
+
+  <text x="500" y="435"
+        text-anchor="middle"
+        font-family="Arial, sans-serif"
+        font-size="11"
+        fill="#8b949e">
+    LONGEST STREAK
+  </text>
+
+
+  <text x="730" y="414"
+        text-anchor="middle"
+        font-family="Arial, sans-serif"
+        font-size="22"
+        font-weight="700"
+        fill="#3fb950">
+    0
+  </text>
+
+  <text x="730" y="435"
+        text-anchor="middle"
+        font-family="Arial, sans-serif"
+        font-size="11"
+        fill="#8b949e">
+    THIS WEEK
+  </text>
+
+
+  <text x="930" y="414"
+        text-anchor="middle"
+        font-family="Arial, sans-serif"
+        font-size="22"
+        font-weight="700"
+        fill="#d29922">
+    0
+  </text>
+
+  <text x="930" y="435"
+        text-anchor="middle"
+        font-family="Arial, sans-serif"
+        font-size="11"
+        fill="#8b949e">
+    THIS MONTH
+  </text>
+
+
+  <!-- Footer -->
+
+  <text x="1055" y="480"
+        text-anchor="end"
+        font-family="Arial, sans-serif"
+        font-size="10"
+        fill="#6e7681">
+    Updated 2026-09-01
+  </text>
+
+</svg>
