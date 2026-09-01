@@ -5,8 +5,6 @@ on:
     paths:
       - 'Java/**/*.java'
       - 'Java/*.java'
-      - 'README.md'
-      - '.github/workflows/update-stats.yml'
 
 permissions:
   contents: write
@@ -28,14 +26,34 @@ jobs:
 
           python - <<EOF
           from pathlib import Path
+          import re
 
           path = Path("README.md")
           text = path.read_text()
 
-          text = text.replace("<!-- TOTAL -->", f"<!-- TOTAL -->{TOTAL}")
-          text = text.replace("<!-- EASY -->", f"<!-- EASY -->{EASY}")
-          text = text.replace("<!-- MEDIUM -->", f"<!-- MEDIUM -->{MEDIUM}")
-          text = text.replace("<!-- HARD -->", f"<!-- HARD -->{HARD}")
+          text = re.sub(
+              r'<!-- PROBLEM_COUNT_START -->.*?<!-- PROBLEM_COUNT_END -->',
+              f'<!-- PROBLEM_COUNT_START -->{TOTAL}<!-- PROBLEM_COUNT_END -->',
+              text
+          )
+
+          text = re.sub(
+              r'<!-- EASY_COUNT_START -->.*?<!-- EASY_COUNT_END -->',
+              f'<!-- EASY_COUNT_START -->{EASY}<!-- EASY_COUNT_END -->',
+              text
+          )
+
+          text = re.sub(
+              r'<!-- MEDIUM_COUNT_START -->.*?<!-- MEDIUM_COUNT_END -->',
+              f'<!-- MEDIUM_COUNT_START -->{MEDIUM}<!-- MEDIUM_COUNT_END -->',
+              text
+          )
+
+          text = re.sub(
+              r'<!-- HARD_COUNT_START -->.*?<!-- HARD_COUNT_END -->',
+              f'<!-- HARD_COUNT_START -->{HARD}<!-- HARD_COUNT_END -->',
+              text
+          )
 
           path.write_text(text)
           EOF
