@@ -1,0 +1,55 @@
+name: Update DSA Statistics
+
+on:
+  push:
+    paths:
+      - 'Java/**/*.java'
+      - 'Java/*.java'
+      - 'README.md'
+      - '.github/workflows/update-stats.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-stats:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Calculate statistics
+        run: |
+          TOTAL=$(find Java -name "*.java" | wc -l)
+          EASY=$(grep -rilE '^//[[:space:]]*Easy[[:space:]]*$' Java --include="*.java" | wc -l)
+          MEDIUM=$(grep -rilE '^//[[:space:]]*Medium[[:space:]]*$' Java --include="*.java" | wc -l)
+          HARD=$(grep -rilE '^//[[:space:]]*Hard[[:space:]]*$' Java --include="*.java" | wc -l)
+
+          python - <<EOF
+          from pathlib import Path
+
+          path = Path("README.md")
+          text = path.read_text()
+
+          text = text.replace("<!-- TOTAL -->", f"<!-- TOTAL -->{TOTAL}")
+          text = text.replace("<!-- EASY -->", f"<!-- EASY -->{EASY}")
+          text = text.replace("<!-- MEDIUM -->", f"<!-- MEDIUM -->{MEDIUM}")
+          text = text.replace("<!-- HARD -->", f"<!-- HARD -->{HARD}")
+
+          path.write_text(text)
+          EOF
+
+      - name: Commit updated statistics
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add README.md
+
+          if git diff --cached --quiet; then
+            echo "No statistics changes."
+          else
+            git commit -m "Update DSA statistics"
+            git push
+          fi
