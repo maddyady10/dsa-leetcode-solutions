@@ -55,7 +55,7 @@
         font-family="Arial"
         font-size="34"
         font-weight="700"
-        fill="#f0f6fc">6</text>
+        fill="#f0f6fc">7</text>
 
   <text x="125" y="170"
         text-anchor="middle"
@@ -71,7 +71,7 @@
         font-size="34"
         font-weight="700"
         fill="#3fb950">
-    3
+    4
   </text>
 
   <text x="375" y="170"
@@ -140,7 +140,7 @@
         fill="#30363d"/>
 
   <rect x="105" y="237"
-        width="380.0"
+        width="433.2"
         height="10"
         rx="5"
         fill="#3fb950"/>
@@ -149,7 +149,7 @@
         font-family="Arial"
         font-size="12"
         fill="#3fb950">
-    50%
+    57%
   </text>
 
   <text x="45" y="280"
@@ -166,7 +166,7 @@
         fill="#30363d"/>
 
   <rect x="105" y="272"
-        width="250.8"
+        width="220.4"
         height="10"
         rx="5"
         fill="#d29922"/>
@@ -175,7 +175,7 @@
         font-family="Arial"
         font-size="12"
         fill="#d29922">
-    33%
+    29%
   </text>
 
   <text x="45" y="315"
@@ -192,7 +192,7 @@
         fill="#30363d"/>
 
   <rect x="105" y="307"
-        width="129.2"
+        width="106.4"
         height="10"
         rx="5"
         fill="#f85149"/>
@@ -201,7 +201,7 @@
         font-family="Arial"
         font-size="12"
         fill="#f85149">
-    17%
+    14%
   </text>
 
   <!-- ACTIVITY -->
