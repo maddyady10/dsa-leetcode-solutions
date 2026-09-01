@@ -16,7 +16,7 @@ class Solution {
         if(a.length%2!=0) return a[a.length/2];
 
         return (double)(a[a.length/2] + a[a.length/2 - 1])/2;
-        
+         
         
     }
 }
