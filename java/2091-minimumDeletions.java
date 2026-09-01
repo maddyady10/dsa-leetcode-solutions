@@ -1,3 +1,5 @@
+// Medium
+
 class Solution {
     public int minimumDeletions(int[] nums) {
         int min = Integer.MAX_VALUE;
