@@ -2,9 +2,6 @@ name: Update DSA Statistics
 
 on:
   push:
-    paths:
-      - 'java/**'
-
   workflow_dispatch:
 
 permissions:
@@ -35,7 +32,7 @@ jobs:
           OUTPUT.parent.mkdir(parents=True, exist_ok=True)
 
           # --------------------------------------------------
-          # 1. Count problems by difficulty
+          # 1. Count problems
           # --------------------------------------------------
 
           java_files = list(JAVA_DIR.rglob("*.java"))
@@ -55,26 +52,26 @@ jobs:
 
               if re.search(r'//\s*Easy\b', first_lines, re.IGNORECASE):
                   easy += 1
+
               elif re.search(r'//\s*Medium\b', first_lines, re.IGNORECASE):
                   medium += 1
+
               elif re.search(r'//\s*Hard\b', first_lines, re.IGNORECASE):
                   hard += 1
 
           # --------------------------------------------------
-          # 2. Difficulty percentages
+          # 2. Percentages
           # --------------------------------------------------
 
           def percentage(value):
-              if total == 0:
-                  return 0
-              return round((value / total) * 100)
+              return round((value / total) * 100) if total else 0
 
           easy_pct = percentage(easy)
           medium_pct = percentage(medium)
           hard_pct = percentage(hard)
 
           # --------------------------------------------------
-          # 3. Git practice dates
+          # 3. Practice dates
           # --------------------------------------------------
 
           result = subprocess.run(
@@ -95,16 +92,12 @@ jobs:
 
           for line in result.stdout.splitlines():
               try:
-                  practice_dates.add(
-                      date.fromisoformat(line.strip())
-                  )
+                  practice_dates.add(date.fromisoformat(line.strip()))
               except ValueError:
                   pass
 
           # --------------------------------------------------
           # 4. Current streak
-          #
-          # A practice day = a day with a commit affecting java/
           # --------------------------------------------------
 
           today = date.today()
@@ -134,6 +127,7 @@ jobs:
           previous = None
 
           for d in sorted(practice_dates):
+
               if previous and d == previous + timedelta(days=1):
                   running += 1
               else:
@@ -163,10 +157,10 @@ jobs:
           )
 
           added_files = []
-
           current_date = None
 
           for line in result.stdout.splitlines():
+
               line = line.strip()
 
               if not line:
@@ -181,14 +175,9 @@ jobs:
               if current_date and line.endswith(".java"):
                   added_files.append((current_date, line))
 
-          # Remove duplicates
           added_files = list(set(added_files))
 
-          today = date.today()
-
-          # Monday = start of current week
           week_start = today - timedelta(days=today.weekday())
-
           month_start = today.replace(day=1)
 
           problems_this_week = sum(
@@ -202,25 +191,7 @@ jobs:
           )
 
           # --------------------------------------------------
-          # 7. SVG helpers
-          # --------------------------------------------------
-
-          def esc(value):
-              return html.escape(str(value))
-
-          def bar(percentage, width=260):
-              filled = int(width * percentage / 100)
-              empty = width - filled
-
-              return (
-                  f'<rect width="{filled}" height="10" rx="5" '
-                  f'fill="#58a6ff"/>'
-                  f'<rect x="{filled}" width="{empty}" height="10" rx="5" '
-                  f'fill="#30363d"/>'
-              )
-
-          # --------------------------------------------------
-          # 8. Generate SVG
+          # 7. Generate SVG
           # --------------------------------------------------
 
           svg = f'''<svg xmlns="http://www.w3.org/2000/svg"
@@ -229,6 +200,7 @@ jobs:
               viewBox="0 0 1100 500">
 
             <defs>
+
               <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
                 <stop offset="0%" stop-color="#0d1117"/>
                 <stop offset="100%" stop-color="#161b22"/>
@@ -238,12 +210,13 @@ jobs:
                 <stop offset="0%" stop-color="#58a6ff"/>
                 <stop offset="100%" stop-color="#a371f7"/>
               </linearGradient>
+
             </defs>
 
-            <!-- Background -->
-            <rect width="1100" height="500" rx="18" fill="url(#bg)"/>
+            <rect width="1100" height="500"
+                  rx="18"
+                  fill="url(#bg)"/>
 
-            <!-- Border -->
             <rect x="1" y="1"
                   width="1098"
                   height="498"
@@ -251,7 +224,6 @@ jobs:
                   fill="none"
                   stroke="#30363d"/>
 
-            <!-- Header -->
             <text x="45" y="52"
                   font-family="Arial, sans-serif"
                   font-size="24"
@@ -272,68 +244,78 @@ jobs:
                   height="2"
                   fill="url(#accent)"/>
 
-            <!-- Main metrics -->
+            <!-- MAIN METRICS -->
 
             <text x="125" y="145"
                   text-anchor="middle"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="34"
                   font-weight="700"
                   fill="#f0f6fc">{total}</text>
 
             <text x="125" y="170"
                   text-anchor="middle"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="12"
-                  fill="#8b949e">TOTAL</text>
-
+                  fill="#8b949e">
+              TOTAL
+            </text>
 
             <text x="375" y="145"
                   text-anchor="middle"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="34"
                   font-weight="700"
-                  fill="#3fb950">{easy}</text>
+                  fill="#3fb950">
+              {easy}
+            </text>
 
             <text x="375" y="170"
                   text-anchor="middle"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="12"
-                  fill="#8b949e">EASY</text>
-
+                  fill="#8b949e">
+              EASY
+            </text>
 
             <text x="625" y="145"
                   text-anchor="middle"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="34"
                   font-weight="700"
-                  fill="#d29922">{medium}</text>
+                  fill="#d29922">
+              {medium}
+            </text>
 
             <text x="625" y="170"
                   text-anchor="middle"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="12"
-                  fill="#8b949e">MEDIUM</text>
-
+                  fill="#8b949e">
+              MEDIUM
+            </text>
 
             <text x="875" y="145"
                   text-anchor="middle"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="34"
                   font-weight="700"
-                  fill="#f85149">{hard}</text>
+                  fill="#f85149">
+              {hard}
+            </text>
 
             <text x="875" y="170"
                   text-anchor="middle"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="12"
-                  fill="#8b949e">HARD</text>
+                  fill="#8b949e">
+              HARD
+            </text>
 
-
-            <!-- Difficulty -->
+            <!-- DIFFICULTY -->
 
             <text x="45" y="215"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="14"
                   font-weight="700"
                   fill="#f0f6fc">
@@ -341,12 +323,17 @@ jobs:
             </text>
 
             <text x="45" y="245"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="12"
-                  fill="#8b949e">Easy</text>
+                  fill="#8b949e">
+              Easy
+            </text>
 
-            <rect x="105" y="237" width="760" height="10"
-                  rx="5" fill="#30363d"/>
+            <rect x="105" y="237"
+                  width="760"
+                  height="10"
+                  rx="5"
+                  fill="#30363d"/>
 
             <rect x="105" y="237"
                   width="{760 * easy_pct / 100}"
@@ -355,18 +342,24 @@ jobs:
                   fill="#3fb950"/>
 
             <text x="890" y="246"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="12"
-                  fill="#3fb950">{easy_pct}%</text>
-
+                  fill="#3fb950">
+              {easy_pct}%
+            </text>
 
             <text x="45" y="280"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="12"
-                  fill="#8b949e">Medium</text>
+                  fill="#8b949e">
+              Medium
+            </text>
 
-            <rect x="105" y="272" width="760" height="10"
-                  rx="5" fill="#30363d"/>
+            <rect x="105" y="272"
+                  width="760"
+                  height="10"
+                  rx="5"
+                  fill="#30363d"/>
 
             <rect x="105" y="272"
                   width="{760 * medium_pct / 100}"
@@ -375,18 +368,24 @@ jobs:
                   fill="#d29922"/>
 
             <text x="890" y="281"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="12"
-                  fill="#d29922">{medium_pct}%</text>
-
+                  fill="#d29922">
+              {medium_pct}%
+            </text>
 
             <text x="45" y="315"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="12"
-                  fill="#8b949e">Hard</text>
+                  fill="#8b949e">
+              Hard
+            </text>
 
-            <rect x="105" y="307" width="760" height="10"
-                  rx="5" fill="#30363d"/>
+            <rect x="105" y="307"
+                  width="760"
+                  height="10"
+                  rx="5"
+                  fill="#30363d"/>
 
             <rect x="105" y="307"
                   width="{760 * hard_pct / 100}"
@@ -395,12 +394,13 @@ jobs:
                   fill="#f85149"/>
 
             <text x="890" y="316"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="12"
-                  fill="#f85149">{hard_pct}%</text>
+                  fill="#f85149">
+              {hard_pct}%
+            </text>
 
-
-            <!-- Activity -->
+            <!-- ACTIVITY -->
 
             <rect x="45" y="350"
                   width="1010"
@@ -410,17 +410,16 @@ jobs:
                   stroke="#30363d"/>
 
             <text x="70" y="380"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="13"
                   font-weight="700"
                   fill="#f0f6fc">
               PRACTICE ACTIVITY
             </text>
 
-
             <text x="270" y="414"
                   text-anchor="middle"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="22"
                   font-weight="700"
                   fill="#58a6ff">
@@ -429,16 +428,15 @@ jobs:
 
             <text x="270" y="435"
                   text-anchor="middle"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="11"
                   fill="#8b949e">
               CURRENT STREAK
             </text>
 
-
             <text x="500" y="414"
                   text-anchor="middle"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="22"
                   font-weight="700"
                   fill="#a371f7">
@@ -447,16 +445,15 @@ jobs:
 
             <text x="500" y="435"
                   text-anchor="middle"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="11"
                   fill="#8b949e">
               LONGEST STREAK
             </text>
 
-
             <text x="730" y="414"
                   text-anchor="middle"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="22"
                   font-weight="700"
                   fill="#3fb950">
@@ -465,16 +462,15 @@ jobs:
 
             <text x="730" y="435"
                   text-anchor="middle"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="11"
                   fill="#8b949e">
               THIS WEEK
             </text>
 
-
             <text x="930" y="414"
                   text-anchor="middle"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="22"
                   font-weight="700"
                   fill="#d29922">
@@ -483,18 +479,15 @@ jobs:
 
             <text x="930" y="435"
                   text-anchor="middle"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="11"
                   fill="#8b949e">
               THIS MONTH
             </text>
 
-
-            <!-- Footer -->
-
             <text x="1055" y="480"
                   text-anchor="end"
-                  font-family="Arial, sans-serif"
+                  font-family="Arial"
                   font-size="10"
                   fill="#6e7681">
               Updated {today.isoformat()}
@@ -507,9 +500,9 @@ jobs:
 
           print("DSA dashboard generated successfully.")
           print(f"Total: {total}")
-          print(f"Easy: {easy} ({easy_pct}%)")
-          print(f"Medium: {medium} ({medium_pct}%)")
-          print(f"Hard: {hard} ({hard_pct}%)")
+          print(f"Easy: {easy}")
+          print(f"Medium: {medium}")
+          print(f"Hard: {hard}")
           print(f"Current streak: {current_streak}")
           print(f"Longest streak: {longest_streak}")
           print(f"This week: {problems_this_week}")
