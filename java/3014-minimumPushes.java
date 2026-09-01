@@ -1,3 +1,5 @@
+//Easy
+
 class Solution {
     public int minimumPushes(String word) {
         int n = word.length();
