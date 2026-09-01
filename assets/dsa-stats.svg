@@ -4,6 +4,7 @@
     viewBox="0 0 1100 500">
 
   <defs>
+
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#0d1117"/>
       <stop offset="100%" stop-color="#161b22"/>
@@ -13,12 +14,13 @@
       <stop offset="0%" stop-color="#58a6ff"/>
       <stop offset="100%" stop-color="#a371f7"/>
     </linearGradient>
+
   </defs>
 
-  <!-- Background -->
-  <rect width="1100" height="500" rx="18" fill="url(#bg)"/>
+  <rect width="1100" height="500"
+        rx="18"
+        fill="url(#bg)"/>
 
-  <!-- Border -->
   <rect x="1" y="1"
         width="1098"
         height="498"
@@ -26,7 +28,6 @@
         fill="none"
         stroke="#30363d"/>
 
-  <!-- Header -->
   <text x="45" y="52"
         font-family="Arial, sans-serif"
         font-size="24"
@@ -47,68 +48,78 @@
         height="2"
         fill="url(#accent)"/>
 
-  <!-- Main metrics -->
+  <!-- MAIN METRICS -->
 
   <text x="125" y="145"
         text-anchor="middle"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="34"
         font-weight="700"
         fill="#f0f6fc">6</text>
 
   <text x="125" y="170"
         text-anchor="middle"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="12"
-        fill="#8b949e">TOTAL</text>
-
+        fill="#8b949e">
+    TOTAL
+  </text>
 
   <text x="375" y="145"
         text-anchor="middle"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="34"
         font-weight="700"
-        fill="#3fb950">3</text>
+        fill="#3fb950">
+    3
+  </text>
 
   <text x="375" y="170"
         text-anchor="middle"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="12"
-        fill="#8b949e">EASY</text>
-
+        fill="#8b949e">
+    EASY
+  </text>
 
   <text x="625" y="145"
         text-anchor="middle"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="34"
         font-weight="700"
-        fill="#d29922">2</text>
+        fill="#d29922">
+    2
+  </text>
 
   <text x="625" y="170"
         text-anchor="middle"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="12"
-        fill="#8b949e">MEDIUM</text>
-
+        fill="#8b949e">
+    MEDIUM
+  </text>
 
   <text x="875" y="145"
         text-anchor="middle"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="34"
         font-weight="700"
-        fill="#f85149">1</text>
+        fill="#f85149">
+    1
+  </text>
 
   <text x="875" y="170"
         text-anchor="middle"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="12"
-        fill="#8b949e">HARD</text>
+        fill="#8b949e">
+    HARD
+  </text>
 
-
-  <!-- Difficulty -->
+  <!-- DIFFICULTY -->
 
   <text x="45" y="215"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="14"
         font-weight="700"
         fill="#f0f6fc">
@@ -116,12 +127,17 @@
   </text>
 
   <text x="45" y="245"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="12"
-        fill="#8b949e">Easy</text>
+        fill="#8b949e">
+    Easy
+  </text>
 
-  <rect x="105" y="237" width="760" height="10"
-        rx="5" fill="#30363d"/>
+  <rect x="105" y="237"
+        width="760"
+        height="10"
+        rx="5"
+        fill="#30363d"/>
 
   <rect x="105" y="237"
         width="380.0"
@@ -130,18 +146,24 @@
         fill="#3fb950"/>
 
   <text x="890" y="246"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="12"
-        fill="#3fb950">50%</text>
-
+        fill="#3fb950">
+    50%
+  </text>
 
   <text x="45" y="280"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="12"
-        fill="#8b949e">Medium</text>
+        fill="#8b949e">
+    Medium
+  </text>
 
-  <rect x="105" y="272" width="760" height="10"
-        rx="5" fill="#30363d"/>
+  <rect x="105" y="272"
+        width="760"
+        height="10"
+        rx="5"
+        fill="#30363d"/>
 
   <rect x="105" y="272"
         width="250.8"
@@ -150,18 +172,24 @@
         fill="#d29922"/>
 
   <text x="890" y="281"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="12"
-        fill="#d29922">33%</text>
-
+        fill="#d29922">
+    33%
+  </text>
 
   <text x="45" y="315"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="12"
-        fill="#8b949e">Hard</text>
+        fill="#8b949e">
+    Hard
+  </text>
 
-  <rect x="105" y="307" width="760" height="10"
-        rx="5" fill="#30363d"/>
+  <rect x="105" y="307"
+        width="760"
+        height="10"
+        rx="5"
+        fill="#30363d"/>
 
   <rect x="105" y="307"
         width="129.2"
@@ -170,12 +198,13 @@
         fill="#f85149"/>
 
   <text x="890" y="316"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="12"
-        fill="#f85149">17%</text>
+        fill="#f85149">
+    17%
+  </text>
 
-
-  <!-- Activity -->
+  <!-- ACTIVITY -->
 
   <rect x="45" y="350"
         width="1010"
@@ -185,17 +214,16 @@
         stroke="#30363d"/>
 
   <text x="70" y="380"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="13"
         font-weight="700"
         fill="#f0f6fc">
     PRACTICE ACTIVITY
   </text>
 
-
   <text x="270" y="414"
         text-anchor="middle"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="22"
         font-weight="700"
         fill="#58a6ff">
@@ -204,16 +232,15 @@
 
   <text x="270" y="435"
         text-anchor="middle"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="11"
         fill="#8b949e">
     CURRENT STREAK
   </text>
 
-
   <text x="500" y="414"
         text-anchor="middle"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="22"
         font-weight="700"
         fill="#a371f7">
@@ -222,16 +249,15 @@
 
   <text x="500" y="435"
         text-anchor="middle"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="11"
         fill="#8b949e">
     LONGEST STREAK
   </text>
 
-
   <text x="730" y="414"
         text-anchor="middle"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="22"
         font-weight="700"
         fill="#3fb950">
@@ -240,16 +266,15 @@
 
   <text x="730" y="435"
         text-anchor="middle"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="11"
         fill="#8b949e">
     THIS WEEK
   </text>
 
-
   <text x="930" y="414"
         text-anchor="middle"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="22"
         font-weight="700"
         fill="#d29922">
@@ -258,18 +283,15 @@
 
   <text x="930" y="435"
         text-anchor="middle"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="11"
         fill="#8b949e">
     THIS MONTH
   </text>
 
-
-  <!-- Footer -->
-
   <text x="1055" y="480"
         text-anchor="end"
-        font-family="Arial, sans-serif"
+        font-family="Arial"
         font-size="10"
         fill="#6e7681">
     Updated 2026-09-01
