@@ -1,3 +1,4 @@
+//Easy
 class Solution {
     public int searchInsert(int[] nums, int t) {
 
