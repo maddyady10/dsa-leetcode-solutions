@@ -1,12 +1,11 @@
 name: Update DSA Statistics
 
 on:
-  workflow_dispatch:
-
   push:
     paths:
-      - 'java/**/*.java'
-      - 'java/*.java'
+      - 'java/**'
+
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -18,76 +17,516 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Calculate statistics
-        env:
-          TOTAL: ""
-          EASY: ""
-          MEDIUM: ""
-          HARD: ""
+      - name: Generate DSA dashboard
         run: |
-          TOTAL=$(find java -type f -name "*.java" | wc -l)
-
-          EASY=$(grep -rilE '^[[:space:]]*//[[:space:]]*Easy[[:space:]]*$' java --include="*.java" | wc -l)
-
-          MEDIUM=$(grep -rilE '^[[:space:]]*//[[:space:]]*Medium[[:space:]]*$' java --include="*.java" | wc -l)
-
-          HARD=$(grep -rilE '^[[:space:]]*//[[:space:]]*Hard[[:space:]]*$' java --include="*.java" | wc -l)
-
-          echo "Total: $TOTAL"
-          echo "Easy: $EASY"
-          echo "Medium: $MEDIUM"
-          echo "Hard: $HARD"
-
-          python - <<EOF
+          python <<'PY'
           from pathlib import Path
+          from datetime import date, timedelta
+          import subprocess
           import re
+          import html
 
-          path = Path("README.md")
-          text = path.read_text()
+          JAVA_DIR = Path("java")
+          OUTPUT = Path("assets/dsa-stats.svg")
 
-          total = "$TOTAL"
-          easy = "$EASY"
-          medium = "$MEDIUM"
-          hard = "$HARD"
+          OUTPUT.parent.mkdir(parents=True, exist_ok=True)
 
-          text = re.sub(
-              r'<!-- PROBLEM_COUNT_START -->.*?<!-- PROBLEM_COUNT_END -->',
-              f'<!-- PROBLEM_COUNT_START -->{total}<!-- PROBLEM_COUNT_END -->',
-              text
+          # --------------------------------------------------
+          # 1. Count problems by difficulty
+          # --------------------------------------------------
+
+          java_files = list(JAVA_DIR.rglob("*.java"))
+
+          total = len(java_files)
+          easy = 0
+          medium = 0
+          hard = 0
+
+          for file in java_files:
+              try:
+                  content = file.read_text(errors="ignore")
+              except Exception:
+                  continue
+
+              first_lines = "\n".join(content.splitlines()[:10])
+
+              if re.search(r'//\s*Easy\b', first_lines, re.IGNORECASE):
+                  easy += 1
+              elif re.search(r'//\s*Medium\b', first_lines, re.IGNORECASE):
+                  medium += 1
+              elif re.search(r'//\s*Hard\b', first_lines, re.IGNORECASE):
+                  hard += 1
+
+          # --------------------------------------------------
+          # 2. Difficulty percentages
+          # --------------------------------------------------
+
+          def percentage(value):
+              if total == 0:
+                  return 0
+              return round((value / total) * 100)
+
+          easy_pct = percentage(easy)
+          medium_pct = percentage(medium)
+          hard_pct = percentage(hard)
+
+          # --------------------------------------------------
+          # 3. Git practice dates
+          # --------------------------------------------------
+
+          result = subprocess.run(
+              [
+                  "git",
+                  "log",
+                  "--format=%ad",
+                  "--date=short",
+                  "--",
+                  "java"
+              ],
+              capture_output=True,
+              text=True,
+              check=True
           )
 
-          text = re.sub(
-              r'<!-- EASY_COUNT_START -->.*?<!-- EASY_COUNT_END -->',
-              f'<!-- EASY_COUNT_START -->{easy}<!-- EASY_COUNT_END -->',
-              text
+          practice_dates = set()
+
+          for line in result.stdout.splitlines():
+              try:
+                  practice_dates.add(
+                      date.fromisoformat(line.strip())
+                  )
+              except ValueError:
+                  pass
+
+          # --------------------------------------------------
+          # 4. Current streak
+          #
+          # A practice day = a day with a commit affecting java/
+          # --------------------------------------------------
+
+          today = date.today()
+
+          if today in practice_dates:
+              streak_start = today
+          elif today - timedelta(days=1) in practice_dates:
+              streak_start = today - timedelta(days=1)
+          else:
+              streak_start = None
+
+          current_streak = 0
+
+          if streak_start:
+              d = streak_start
+
+              while d in practice_dates:
+                  current_streak += 1
+                  d -= timedelta(days=1)
+
+          # --------------------------------------------------
+          # 5. Longest streak
+          # --------------------------------------------------
+
+          longest_streak = 0
+          running = 0
+          previous = None
+
+          for d in sorted(practice_dates):
+              if previous and d == previous + timedelta(days=1):
+                  running += 1
+              else:
+                  running = 1
+
+              longest_streak = max(longest_streak, running)
+              previous = d
+
+          # --------------------------------------------------
+          # 6. Problems added this week/month
+          # --------------------------------------------------
+
+          result = subprocess.run(
+              [
+                  "git",
+                  "log",
+                  "--diff-filter=A",
+                  "--format=%ad",
+                  "--date=short",
+                  "--name-only",
+                  "--",
+                  "java"
+              ],
+              capture_output=True,
+              text=True,
+              check=True
           )
 
-          text = re.sub(
-              r'<!-- MEDIUM_COUNT_START -->.*?<!-- MEDIUM_COUNT_END -->',
-              f'<!-- MEDIUM_COUNT_START -->{medium}<!-- MEDIUM_COUNT_END -->',
-              text
+          added_files = []
+
+          current_date = None
+
+          for line in result.stdout.splitlines():
+              line = line.strip()
+
+              if not line:
+                  continue
+
+              try:
+                  current_date = date.fromisoformat(line)
+                  continue
+              except ValueError:
+                  pass
+
+              if current_date and line.endswith(".java"):
+                  added_files.append((current_date, line))
+
+          # Remove duplicates
+          added_files = list(set(added_files))
+
+          today = date.today()
+
+          # Monday = start of current week
+          week_start = today - timedelta(days=today.weekday())
+
+          month_start = today.replace(day=1)
+
+          problems_this_week = sum(
+              1 for d, _ in added_files
+              if week_start <= d <= today
           )
 
-          text = re.sub(
-              r'<!-- HARD_COUNT_START -->.*?<!-- HARD_COUNT_END -->',
-              f'<!-- HARD_COUNT_START -->{hard}<!-- HARD_COUNT_END -->',
-              text
+          problems_this_month = sum(
+              1 for d, _ in added_files
+              if month_start <= d <= today
           )
 
-          path.write_text(text)
-          EOF
+          # --------------------------------------------------
+          # 7. SVG helpers
+          # --------------------------------------------------
 
-      - name: Commit updated statistics
+          def esc(value):
+              return html.escape(str(value))
+
+          def bar(percentage, width=260):
+              filled = int(width * percentage / 100)
+              empty = width - filled
+
+              return (
+                  f'<rect width="{filled}" height="10" rx="5" '
+                  f'fill="#58a6ff"/>'
+                  f'<rect x="{filled}" width="{empty}" height="10" rx="5" '
+                  f'fill="#30363d"/>'
+              )
+
+          # --------------------------------------------------
+          # 8. Generate SVG
+          # --------------------------------------------------
+
+          svg = f'''<svg xmlns="http://www.w3.org/2000/svg"
+              width="1100"
+              height="500"
+              viewBox="0 0 1100 500">
+
+            <defs>
+              <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#0d1117"/>
+                <stop offset="100%" stop-color="#161b22"/>
+              </linearGradient>
+
+              <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#58a6ff"/>
+                <stop offset="100%" stop-color="#a371f7"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Background -->
+            <rect width="1100" height="500" rx="18" fill="url(#bg)"/>
+
+            <!-- Border -->
+            <rect x="1" y="1"
+                  width="1098"
+                  height="498"
+                  rx="18"
+                  fill="none"
+                  stroke="#30363d"/>
+
+            <!-- Header -->
+            <text x="45" y="52"
+                  font-family="Arial, sans-serif"
+                  font-size="24"
+                  font-weight="700"
+                  fill="#f0f6fc">
+              DSA PRACTICE STATISTICS
+            </text>
+
+            <text x="45" y="78"
+                  font-family="Arial, sans-serif"
+                  font-size="13"
+                  fill="#8b949e">
+              Data Structures &amp; Algorithms · Java · LeetCode
+            </text>
+
+            <rect x="45" y="92"
+                  width="1010"
+                  height="2"
+                  fill="url(#accent)"/>
+
+            <!-- Main metrics -->
+
+            <text x="125" y="145"
+                  text-anchor="middle"
+                  font-family="Arial, sans-serif"
+                  font-size="34"
+                  font-weight="700"
+                  fill="#f0f6fc">{total}</text>
+
+            <text x="125" y="170"
+                  text-anchor="middle"
+                  font-family="Arial, sans-serif"
+                  font-size="12"
+                  fill="#8b949e">TOTAL</text>
+
+
+            <text x="375" y="145"
+                  text-anchor="middle"
+                  font-family="Arial, sans-serif"
+                  font-size="34"
+                  font-weight="700"
+                  fill="#3fb950">{easy}</text>
+
+            <text x="375" y="170"
+                  text-anchor="middle"
+                  font-family="Arial, sans-serif"
+                  font-size="12"
+                  fill="#8b949e">EASY</text>
+
+
+            <text x="625" y="145"
+                  text-anchor="middle"
+                  font-family="Arial, sans-serif"
+                  font-size="34"
+                  font-weight="700"
+                  fill="#d29922">{medium}</text>
+
+            <text x="625" y="170"
+                  text-anchor="middle"
+                  font-family="Arial, sans-serif"
+                  font-size="12"
+                  fill="#8b949e">MEDIUM</text>
+
+
+            <text x="875" y="145"
+                  text-anchor="middle"
+                  font-family="Arial, sans-serif"
+                  font-size="34"
+                  font-weight="700"
+                  fill="#f85149">{hard}</text>
+
+            <text x="875" y="170"
+                  text-anchor="middle"
+                  font-family="Arial, sans-serif"
+                  font-size="12"
+                  fill="#8b949e">HARD</text>
+
+
+            <!-- Difficulty -->
+
+            <text x="45" y="215"
+                  font-family="Arial, sans-serif"
+                  font-size="14"
+                  font-weight="700"
+                  fill="#f0f6fc">
+              DIFFICULTY DISTRIBUTION
+            </text>
+
+            <text x="45" y="245"
+                  font-family="Arial, sans-serif"
+                  font-size="12"
+                  fill="#8b949e">Easy</text>
+
+            <rect x="105" y="237" width="760" height="10"
+                  rx="5" fill="#30363d"/>
+
+            <rect x="105" y="237"
+                  width="{760 * easy_pct / 100}"
+                  height="10"
+                  rx="5"
+                  fill="#3fb950"/>
+
+            <text x="890" y="246"
+                  font-family="Arial, sans-serif"
+                  font-size="12"
+                  fill="#3fb950">{easy_pct}%</text>
+
+
+            <text x="45" y="280"
+                  font-family="Arial, sans-serif"
+                  font-size="12"
+                  fill="#8b949e">Medium</text>
+
+            <rect x="105" y="272" width="760" height="10"
+                  rx="5" fill="#30363d"/>
+
+            <rect x="105" y="272"
+                  width="{760 * medium_pct / 100}"
+                  height="10"
+                  rx="5"
+                  fill="#d29922"/>
+
+            <text x="890" y="281"
+                  font-family="Arial, sans-serif"
+                  font-size="12"
+                  fill="#d29922">{medium_pct}%</text>
+
+
+            <text x="45" y="315"
+                  font-family="Arial, sans-serif"
+                  font-size="12"
+                  fill="#8b949e">Hard</text>
+
+            <rect x="105" y="307" width="760" height="10"
+                  rx="5" fill="#30363d"/>
+
+            <rect x="105" y="307"
+                  width="{760 * hard_pct / 100}"
+                  height="10"
+                  rx="5"
+                  fill="#f85149"/>
+
+            <text x="890" y="316"
+                  font-family="Arial, sans-serif"
+                  font-size="12"
+                  fill="#f85149">{hard_pct}%</text>
+
+
+            <!-- Activity -->
+
+            <rect x="45" y="350"
+                  width="1010"
+                  height="105"
+                  rx="12"
+                  fill="#161b22"
+                  stroke="#30363d"/>
+
+            <text x="70" y="380"
+                  font-family="Arial, sans-serif"
+                  font-size="13"
+                  font-weight="700"
+                  fill="#f0f6fc">
+              PRACTICE ACTIVITY
+            </text>
+
+
+            <text x="270" y="414"
+                  text-anchor="middle"
+                  font-family="Arial, sans-serif"
+                  font-size="22"
+                  font-weight="700"
+                  fill="#58a6ff">
+              {current_streak}
+            </text>
+
+            <text x="270" y="435"
+                  text-anchor="middle"
+                  font-family="Arial, sans-serif"
+                  font-size="11"
+                  fill="#8b949e">
+              CURRENT STREAK
+            </text>
+
+
+            <text x="500" y="414"
+                  text-anchor="middle"
+                  font-family="Arial, sans-serif"
+                  font-size="22"
+                  font-weight="700"
+                  fill="#a371f7">
+              {longest_streak}
+            </text>
+
+            <text x="500" y="435"
+                  text-anchor="middle"
+                  font-family="Arial, sans-serif"
+                  font-size="11"
+                  fill="#8b949e">
+              LONGEST STREAK
+            </text>
+
+
+            <text x="730" y="414"
+                  text-anchor="middle"
+                  font-family="Arial, sans-serif"
+                  font-size="22"
+                  font-weight="700"
+                  fill="#3fb950">
+              {problems_this_week}
+            </text>
+
+            <text x="730" y="435"
+                  text-anchor="middle"
+                  font-family="Arial, sans-serif"
+                  font-size="11"
+                  fill="#8b949e">
+              THIS WEEK
+            </text>
+
+
+            <text x="930" y="414"
+                  text-anchor="middle"
+                  font-family="Arial, sans-serif"
+                  font-size="22"
+                  font-weight="700"
+                  fill="#d29922">
+              {problems_this_month}
+            </text>
+
+            <text x="930" y="435"
+                  text-anchor="middle"
+                  font-family="Arial, sans-serif"
+                  font-size="11"
+                  fill="#8b949e">
+              THIS MONTH
+            </text>
+
+
+            <!-- Footer -->
+
+            <text x="1055" y="480"
+                  text-anchor="end"
+                  font-family="Arial, sans-serif"
+                  font-size="10"
+                  fill="#6e7681">
+              Updated {today.isoformat()}
+            </text>
+
+          </svg>
+          '''
+
+          OUTPUT.write_text(svg)
+
+          print("DSA dashboard generated successfully.")
+          print(f"Total: {total}")
+          print(f"Easy: {easy} ({easy_pct}%)")
+          print(f"Medium: {medium} ({medium_pct}%)")
+          print(f"Hard: {hard} ({hard_pct}%)")
+          print(f"Current streak: {current_streak}")
+          print(f"Longest streak: {longest_streak}")
+          print(f"This week: {problems_this_week}")
+          print(f"This month: {problems_this_month}")
+
+          PY
+
+      - name: Commit updated dashboard
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add README.md
+          git add assets/dsa-stats.svg
 
           if git diff --cached --quiet; then
-            echo "No changes to commit"
+            echo "No dashboard changes."
           else
-            git commit -m "Update DSA statistics"
+            git commit -m "Update DSA dashboard"
             git push
           fi
