@@ -1,10 +1,12 @@
 name: Update DSA Statistics
 
 on:
+  workflow_dispatch:
+
   push:
     paths:
-      - 'Java/**/*.java'
-      - 'Java/*.java'
+      - 'java/**/*.java'
+      - 'java/*.java'
 
 permissions:
   contents: write
@@ -18,11 +20,24 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Calculate statistics
+        env:
+          TOTAL: ""
+          EASY: ""
+          MEDIUM: ""
+          HARD: ""
         run: |
-          TOTAL=$(find Java -name "*.java" | wc -l)
-          EASY=$(grep -rilE '^//[[:space:]]*Easy[[:space:]]*$' Java --include="*.java" | wc -l)
-          MEDIUM=$(grep -rilE '^//[[:space:]]*Medium[[:space:]]*$' Java --include="*.java" | wc -l)
-          HARD=$(grep -rilE '^//[[:space:]]*Hard[[:space:]]*$' Java --include="*.java" | wc -l)
+          TOTAL=$(find java -type f -name "*.java" | wc -l)
+
+          EASY=$(grep -rilE '^[[:space:]]*//[[:space:]]*Easy[[:space:]]*$' java --include="*.java" | wc -l)
+
+          MEDIUM=$(grep -rilE '^[[:space:]]*//[[:space:]]*Medium[[:space:]]*$' java --include="*.java" | wc -l)
+
+          HARD=$(grep -rilE '^[[:space:]]*//[[:space:]]*Hard[[:space:]]*$' java --include="*.java" | wc -l)
+
+          echo "Total: $TOTAL"
+          echo "Easy: $EASY"
+          echo "Medium: $MEDIUM"
+          echo "Hard: $HARD"
 
           python - <<EOF
           from pathlib import Path
@@ -31,27 +46,32 @@ jobs:
           path = Path("README.md")
           text = path.read_text()
 
+          total = "$TOTAL"
+          easy = "$EASY"
+          medium = "$MEDIUM"
+          hard = "$HARD"
+
           text = re.sub(
               r'<!-- PROBLEM_COUNT_START -->.*?<!-- PROBLEM_COUNT_END -->',
-              f'<!-- PROBLEM_COUNT_START -->{TOTAL}<!-- PROBLEM_COUNT_END -->',
+              f'<!-- PROBLEM_COUNT_START -->{total}<!-- PROBLEM_COUNT_END -->',
               text
           )
 
           text = re.sub(
               r'<!-- EASY_COUNT_START -->.*?<!-- EASY_COUNT_END -->',
-              f'<!-- EASY_COUNT_START -->{EASY}<!-- EASY_COUNT_END -->',
+              f'<!-- EASY_COUNT_START -->{easy}<!-- EASY_COUNT_END -->',
               text
           )
 
           text = re.sub(
               r'<!-- MEDIUM_COUNT_START -->.*?<!-- MEDIUM_COUNT_END -->',
-              f'<!-- MEDIUM_COUNT_START -->{MEDIUM}<!-- MEDIUM_COUNT_END -->',
+              f'<!-- MEDIUM_COUNT_START -->{medium}<!-- MEDIUM_COUNT_END -->',
               text
           )
 
           text = re.sub(
               r'<!-- HARD_COUNT_START -->.*?<!-- HARD_COUNT_END -->',
-              f'<!-- HARD_COUNT_START -->{HARD}<!-- HARD_COUNT_END -->',
+              f'<!-- HARD_COUNT_START -->{hard}<!-- HARD_COUNT_END -->',
               text
           )
 
@@ -66,7 +86,7 @@ jobs:
           git add README.md
 
           if git diff --cached --quiet; then
-            echo "No statistics changes."
+            echo "No changes to commit"
           else
             git commit -m "Update DSA statistics"
             git push
