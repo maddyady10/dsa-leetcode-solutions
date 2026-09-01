@@ -9,14 +9,14 @@ I use this repository to strengthen algorithmic thinking, recognize recurring pr
 
 ### 📊 Practice Overview
 
-| Metric              | Details                                                   |
-| :------------------ | :-------------------------------------------------------- |
-| **Problems Solved** | `<!-- PROBLEM_COUNT_START -->4<!-- PROBLEM_COUNT_END -->` |
-| **Easy**            | `<!-- EASY_COUNT_START -->3<!-- EASY_COUNT_END -->`       |
-| **Medium**          | `<!-- MEDIUM_COUNT_START -->1<!-- MEDIUM_COUNT_END -->`   |
-| **Hard**            | `<!-- HARD_COUNT_START -->0<!-- HARD_COUNT_END -->`       |
-| **Language**        | Java                                                      |
-| **Platform**        | LeetCode                                                  |
+| Metric | Details |
+| :--- | :--- |
+| **Problems Solved** | **<!-- PROBLEM_COUNT_START -->4<!-- PROBLEM_COUNT_END -->** |
+| **Easy** | **<!-- EASY_COUNT_START -->3<!-- EASY_COUNT_END -->** |
+| **Medium** | **<!-- MEDIUM_COUNT_START -->1<!-- MEDIUM_COUNT_END -->** |
+| **Hard** | **<!-- HARD_COUNT_START -->0<!-- HARD_COUNT_END -->** |
+| **Language** | Java |
+| **Platform** | LeetCode |
 
 ---
 
