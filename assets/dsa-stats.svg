@@ -55,7 +55,7 @@
         font-family="Arial"
         font-size="34"
         font-weight="700"
-        fill="#f0f6fc">7</text>
+        fill="#f0f6fc">8</text>
 
   <text x="125" y="170"
         text-anchor="middle"
@@ -71,7 +71,7 @@
         font-size="34"
         font-weight="700"
         fill="#3fb950">
-    4
+    5
   </text>
 
   <text x="375" y="170"
@@ -140,7 +140,7 @@
         fill="#30363d"/>
 
   <rect x="105" y="237"
-        width="433.2"
+        width="471.2"
         height="10"
         rx="5"
         fill="#3fb950"/>
@@ -149,7 +149,7 @@
         font-family="Arial"
         font-size="12"
         fill="#3fb950">
-    57%
+    62%
   </text>
 
   <text x="45" y="280"
@@ -166,7 +166,7 @@
         fill="#30363d"/>
 
   <rect x="105" y="272"
-        width="220.4"
+        width="190.0"
         height="10"
         rx="5"
         fill="#d29922"/>
@@ -175,7 +175,7 @@
         font-family="Arial"
         font-size="12"
         fill="#d29922">
-    29%
+    25%
   </text>
 
   <text x="45" y="315"
@@ -192,7 +192,7 @@
         fill="#30363d"/>
 
   <rect x="105" y="307"
-        width="106.4"
+        width="91.2"
         height="10"
         rx="5"
         fill="#f85149"/>
@@ -201,7 +201,7 @@
         font-family="Arial"
         font-size="12"
         fill="#f85149">
-    14%
+    12%
   </text>
 
   <!-- ACTIVITY -->
@@ -227,7 +227,7 @@
         font-size="22"
         font-weight="700"
         fill="#58a6ff">
-    0
+    1
   </text>
 
   <text x="270" y="435"
@@ -261,7 +261,7 @@
         font-size="22"
         font-weight="700"
         fill="#3fb950">
-    0
+    4
   </text>
 
   <text x="730" y="435"
@@ -278,7 +278,7 @@
         font-size="22"
         font-weight="700"
         fill="#d29922">
-    0
+    4
   </text>
 
   <text x="930" y="435"
@@ -294,7 +294,7 @@
         font-family="Arial"
         font-size="10"
         fill="#6e7681">
-    Updated 2026-09-01
+    Updated 2026-09-02
   </text>
 
 </svg>
